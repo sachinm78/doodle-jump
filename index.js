@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let doodlerBottomSpace = 150
     let isGameOver = false
     let platforms = []
+    let upTimerId
+    let downTimerId
   
     class Platform {
         constructor(newPlatBottom) {
@@ -38,10 +40,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function jump() {
+        clearInterval(downTimerId)
+        upTimerId = setInterval(function () {
+          doodlerBottomSpace += 20
+          doodler.style.bottom = doodlerBottomSpace + 'px'
+          if (doodlerBottomSpace > (startPoint + 200)) {
+            fall()
+          }
+        },30)
+    }
+
+    function fall() {
+        clearInterval(upTimerId)  
+        downTimerId = setInterval(function () {
+            doodlerBottomSpace -= 5
+            doodler.style.bottom = doodlerBottomSpace + 'px'
+      
+        },20)
+    }
+
+    function movePlatforms() {
+        if (doodlerBottomSpace > 200) {
+            platforms.forEach(platform => {
+              platform.bottom -= 4
+              let visual = platform.visual
+              visual.style.bottom = platform.bottom + 'px'
+    
+              if(platform.bottom < 10) {
+                let firstPlatform = platforms[0].visual
+                firstPlatform.classList.remove('platform')
+                platforms.shift()
+                console.log(platforms)
+                score++
+                var newPlatform = new Platform(600)
+                platforms.push(newPlatform)
+              }
+        }) 
+    }
+
+
+
     function start() {
         if (!isGameOver) {
           createDoodler()
           createPlatforms()
+          setInterval(movePlatforms,30)
+          jump()
           
         } 
     }
