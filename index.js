@@ -190,5 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('keyup', control)
       } 
     }
+    //can add a button
     start()
 })
